@@ -1,0 +1,37 @@
+/* Background pattern from Toptal Subtle Patterns */
+body{
+    background-image: url(../images/trees/trees.png);
+    background-color: #d6e8ed;
+    font-family: 'Press Start 2P', sans-serif;
+}
+
+.navbar{
+    font-family: 'Montserrat', sans-serif;
+}
+
+#backButton{
+    font-size: 1.5em;
+    color: rgb(159, 143, 245);
+}
+
+#mainContent{
+    margin-top: 6em;
+}
+
+#brownNav{
+    background-color: rgb(136, 106, 73);
+}
+
+#nameShort{
+    display: none;
+}
+
+@media (max-width: 767px){
+    #nameLong{
+        display: none;
+    }
+
+    #nameShort{
+        display: inline;
+    }
+}
