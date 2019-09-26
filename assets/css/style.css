@@ -3,6 +3,7 @@ body{
     background-image: url(../images/trees/trees.png);
     background-color: #d6e8ed;
     font-family: 'Press Start 2P', sans-serif;
+    color: #2f3644;
 }
 
 .navbar{
@@ -18,8 +19,18 @@ body{
     margin-top: 6em;
 }
 
-#brownNav{
-    background-color: rgb(136, 106, 73);
+.jumbotron{
+    padding:1em;
+}
+
+.character{
+    background-color: rgba(34, 46, 66, 0.432);
+}
+
+.imgClass{
+    margin:0;
+    margin-bottom: .5em;
+    border-radius: 3%;
 }
 
 #nameShort{
