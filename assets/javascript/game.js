@@ -1,7 +1,7 @@
 class characterClass{
     constructor(name, HP, AP, critChance, attIcon, specAP, specCD, specIcon, img){
         this.name = name;
-        this.HP = HP*2;
+        this.HP = HP*5;
         this.AP = AP;
         this.critChance = critChance;
         this.attIcon = attIcon;
@@ -12,19 +12,17 @@ class characterClass{
     }
     get attack(){
         if(this.critChance >= randomNumber(100,1)){
-            console.log("CRITICAL!");
-            return randomNumber(this.AP)*2;
+            return [randomNumber(this.AP)*2,true];
         } else{
-            return randomNumber(this.AP);
+            return [randomNumber(this.AP),false];
         }
     }
 
     get specAttack(){
         if(this.critChance >= randomNumber(100,1)){
-            console.log("SPEC-CRITICAL!");
-            return randomNumber(this.specAP)*2;
+            return [randomNumber(this.specAP,this.specAP/2)*2,true];
         } else{
-            return randomNumber(this.specAP);
+            return [randomNumber(this.specAP),false];
         }
     }
 
@@ -82,12 +80,28 @@ class characterClass{
     }
 
     addAttacks(){
+        $("#"+this.name).children("h5").text("Hero: "+this.name);
         var newButton = $("<button>");
         newButton.attr("class", "btn btn-secondary");
+        newButton.attr("id","attBttn");
+        newButton.attr("data-toggle","tooltip");
+        newButton.attr("data-placement","top");
+        newButton.attr("title","Deals damage between 1 and "+this.AP);
         newButton.html(`<i class="${this.attIcon}" id="${this.name}Btn" alt="${this.name} attack button"></i> Attack`);
         $("#"+this.name).append(newButton);
+        var newSpan = $("<span>");
+        newSpan.text(`   CD: ${this.specCD}`);
+        newSpan.attr("id", "cdSpan");
+        newSpan.attr("data-toggle","tooltip");
+        newSpan.attr("data-placement","top");
+        newSpan.attr("title", "Cooldown of Special Attack");
+        $("#"+this.name).append(newSpan);
         var newButton2 = $("<button>");
         newButton2.attr("class", "btn btn-secondary");
+        newButton2.attr("id","specAttBttn");
+        newButton2.attr("data-toggle","tooltip");
+        newButton2.attr("data-placement","top");
+        newButton2.attr("title",`Deals damage between ${this.specAP/2} and ${this.specAP}`);
         newButton2.html(`<i class="${this.specIcon}" id="${this.name}SpecBtn" alt="${this.name} special attack button"></i> Special Attack`);
         $("#"+this.name).append(newButton2);
     }
@@ -101,25 +115,24 @@ class characterClass{
 
 let characters = [
     new characterClass("Archer", 6, 8, 30, "far fa-bow-arrow", 16, 4, "far fa-bullseye-arrow", "assets/images/Archer.png"),
-    new characterClass("Warrior", 10, 8, 10, "far fa-sword", 4, 2, "far fa-shield-alt", "assets/images/Warrior.png"),
+    new characterClass("Warrior", 10, 8, 10, "far fa-sword", 10, 2, "far fa-shield-alt", "assets/images/Warrior.png"),
     new characterClass("Rogue", 8, 6, 50, "far fa-dagger", 20, 6, "far fa-flask-poison", "assets/images/Rogue.png"),
     new characterClass("Mage", 6, 8, 30, "far fa-wand-magic", 16, 4, "far fa-book-spells", "assets/images/Mage.png"),
     new characterClass("Druid", 8, 8, 20, "far fa-staff", 20, 5, "far fa-paw-claws", "assets/images/Druid.png")
 ];
 
-characters[1].specAttack = new function(){
+/*characters[1].specAttack = new function(){
     this.HP += randomNumber(this.specAP);
-    /*super.specAttack();*/
-    console.log("Healed HP");
     if(this.critChance >= randomNumber(100,1)){
         console.log("SPEC-CRITICAL!");
         return randomNumber(this.specAP)*2;
     } else{
         return randomNumber(this.specAP);
     }
-}
+}*/
 
-var selectedClass;
+var selectedHero;
+var heroCD;
 var selectedEnemy;
 var gameState = 0;
 
@@ -134,51 +147,140 @@ $(document).ready(function() {
         character.updateHTML();
     }
 
+    //Attacking
+    $(document).on("click","#attBttn",function(){
+        //Hero damages enemy
+        var dmg = characters[indexChar(selectedHero)].attack;
+        if(dmg[1]){
+            $(".modal-title").text("Critical Hit!");
+            $(".modal-body").text(`You dealt ${dmg[0]/2} damage twice, for a total of ${dmg[0]}.`);
+        } else{
+            $(".modal-title").text("Hit!");
+            $(".modal-body").text(`You dealt ${dmg[0]} damage.`);
+        }
+        characters[indexChar(selectedEnemy)].HP -= dmg[0];
+        characters[indexChar(selectedEnemy)].updateHTML();
+
+        //Enemy damages hero
+        var dmg2 = characters[indexChar(selectedEnemy)].attack;
+        console.log(dmg2[0]);
+        if(dmg2[1]){
+            $('#alert2').children().children().children().children(".modal-title").text("Critical counter-hit!");
+            $('#alert2').children().children().children(".modal-body").text(`You were dealt ${dmg2[0]/2} damage twice, for a total of ${dmg2[0]}.`);
+        } else{
+            $('#alert2').children().children().children().children(".modal-title").text("Counter-hit!");
+            $('#alert2').children().children().children(".modal-body").text(`You were dealt ${dmg2[0]} damage.`);
+        }
+        characters[indexChar(selectedHero)].HP -= dmg2[0];
+        characters[indexChar(selectedHero)].updateHTML();
+
+        //Alerts
+        $('#alert').modal('show');
+        $('#alert2').modal('show');
+
+        //Special Attack CD
+        if(heroCD>1){
+            $("#cdSpan").text(`   CD: ${--heroCD}`);
+        } else{
+            $("#cdSpan").text(`   CD: ${characters[indexChar(selectedHero)].specCD}`);
+            $("#specAttBttn").attr("disabled",false);
+            $("#cdSpan").css("color","");
+            heroCD = characters[indexChar(selectedHero)].specCD;
+        }
+    });
+
+    //Special Attacking
+    $(document).on("click","#specAttBttn",function(){
+        //Hero damages enemy
+        var dmg = characters[indexChar(selectedHero)].specAttack;
+        if(dmg[1]){
+            $(".modal-title").text("Critical Special Hit!");
+            $(".modal-body").text(`You dealt ${dmg[0]/2} damage twice with your special attack, for a total of ${dmg[0]}.`);
+        } else{
+            $(".modal-title").text("Special Hit!");
+            $(".modal-body").text(`You dealt ${dmg[0]} damage with your special attack!`);
+        }
+        characters[indexChar(selectedEnemy)].HP -= dmg[0];
+        characters[indexChar(selectedEnemy)].updateHTML();
+        $("#cdSpan").text(`   CD: ${heroCD}`);
+        $("#cdSpan").css("color","darkred");
+        $("#specAttBttn").attr("disabled",true);
+
+        //Enemy damages hero
+        var dmg2 = characters[indexChar(selectedEnemy)].attack;
+        console.log(dmg2[0]);
+        if(dmg2[1]){
+            $('#alert2').children().children().children().children(".modal-title").text("Critical counter-hit!");
+            $('#alert2').children().children().children(".modal-body").text(`You were dealt ${dmg2[0]/2} damage twice, for a total of ${dmg2[0]}.`);
+        } else{
+            $('#alert2').children().children().children().children(".modal-title").text("Counter-hit!");
+            $('#alert2').children().children().children(".modal-body").text(`You were dealt ${dmg2[0]} damage.`);
+        }
+        characters[indexChar(selectedHero)].HP -= dmg2[0];
+        characters[indexChar(selectedHero)].updateHTML();
+
+        //Alerts
+        $('#alert').modal('show');
+        $('#alert2').modal('show');
+    });
 
     //Clicking a character
-    $(".character").on("click", function() {
+    $(document).on("click", ".character",function() {
         if(gameState === 0){
-            selectedClass = $(this).attr('id').toString();
-            console.log(selectedClass);
+            selectedHero = $(this).attr('id').toString();
+            console.log("Hero: "+selectedHero);
             $(".modal-title").text("Confirm Class");
-            $(".modal-body").text(`Your class will be ${selectedClass}, confirm choice?`);
+            $(".modal-body").text(`Your class will be ${selectedHero}, confirm choice?`);
             $('#confirm').modal('show');
         } else if(gameState === 1){
             selectedEnemy = $(this).attr('id').toString();
-            console.log(selectedEnemy);
+            console.log("Enemy: "+selectedEnemy);
             $(".modal-title").text("Confirm Enemy");
             $(".modal-body").text(`Your enemy will be ${selectedEnemy}, confirm choice?`);
             $('#confirm').modal('show');
         }
     });
 
+    //Clicking yes on Confirm
     $('#confirm').on('click', '#btnYes', function(){
         if(gameState===0){
-            console.log("Accepted class: " + selectedClass);
+            console.log("Accepted Hero: " + selectedHero);
+            heroCD = characters[indexChar(selectedHero)].specCD;
             gameState=1;
-            $(`#${selectedClass}`).parent().remove();;
+            $(`#${selectedHero}`).parent().remove();;
             $("#title").text("Choose an enemy to fight!");
         } else if(gameState===1){
             console.log("Accepted enemy: " + selectedEnemy);
             gameState=2;
             $("#mainRow").empty();
             $("#title").text("Fight!");
-            characters[getValue(characters, selectedClass)].generateStartCard();
-            characters[getValue(characters, selectedClass)].updateHTML();
-            characters[getValue(characters, selectedClass)].addAttacks();
-
+            characters[indexChar(selectedHero)].generateStartCard();
+            characters[indexChar(selectedHero)].updateHTML();
+            characters[indexChar(selectedHero)].addAttacks();
+            emptyCol();
+            characters[indexChar(selectedEnemy)].generateStartCard();
+            characters[indexChar(selectedEnemy)].updateHTML();
+            $(`#${selectedEnemy}`).children("h5").text(`Enemy: ${selectedEnemy}`);
         }
     });
 
+
+
 });
 
-function getValue(array, value){
-    for(let i = 0 ; i < array.length ; i++){
-        if(array[i].name === value) return i;
+function indexChar(value){
+    for(let i = 0 ; i < characters.length ; i++){
+        if(characters[i].name === value) return i;
     }
     return null;
 }
 
 function randomNumber (max=10, min=1){
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function emptyCol(){
+    var newCol = $("<div>");
+    newCol.attr("class", "col-md-4 col-sm-6");
+    $("#mainRow").append(newCol);
 }
