@@ -54,16 +54,52 @@ characters[1].specAttack = new function(){
     }
 }
 
-console.log("Testing warrior attack: " + characters[1].attack);
-console.log("Testing warrior special attack: " + characters[1].specAttack);
+var selectedClass;
+var selectedEnemy;
+var gameState = 0;
 
-for(let character of characters) character.updateHTML();
+$(document).ready(function() {
 
-//Tooltop Inizialization
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-})
+    //Tooltop Inizialization
+    $(function () {$('[data-toggle="tooltip"]').tooltip()})
+
+    //Character stats initialization
+    for(let character of characters) character.updateHTML();
+
+
+    //Clicking a character
+    $(".character").on("click", function() {
+        if(gameState === 0){
+            selectedClass = $(this).attr('id').toString();
+            console.log(selectedClass);
+            $(".modal-title").text("Confirm Class");
+            $(".modal-body").text(`Your class will be ${selectedClass}, confirm choice?`);
+            $('#confirm').modal('show');
+        } else if(gameState === 1){
+            selectedEnemy = $(this).attr('id').toString();
+            console.log(selectedEnemy);
+            $(".modal-title").text("Confirm Enemy");
+            $(".modal-body").text(`Your enemy will be ${selectedEnemy}, confirm choice?`);
+            $('#confirm').modal('show');
+        }
+    });
+
+    $('#confirm').on('click', '#btnYes', function(){
+        if(gameState===0){
+            console.log("Accepted class: " + selectedClass);
+            $(`#${selectedClass}`).hide();;
+            gameState=1;
+            $("#title").text("Choose an enemy to fight!");
+        } else if(gameState===1){
+            console.log("Accepted enemy: " + selectedEnemy);
+            $(`#${selectedEnemy}`).hide();;
+            gameState=2;
+            $("#title").text("Fight!");
+        }
+    });
+
+});
 
 function randomNumber (max=10, min=1){
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+}
