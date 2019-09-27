@@ -37,6 +37,14 @@ body{
     border-radius: 1%;
 }
 
+.h2{
+    margin-bottom: 1em;
+}
+
+.btn{
+    margin:.2em;
+}
+
 #nameShort{
     display: none;
 }
