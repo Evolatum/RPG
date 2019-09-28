@@ -129,7 +129,6 @@ let characters = [
 //Object with properties and methods singular to game, gE = gameEngine
 let gE = {
     selectedHero:"",
-    //hero:"",gE.hero = jQuery.extend(true, {}, characters[gE.index(gE.selectedHero)]);
     heroCD:"",
     selectedEnemy:"",
     alreadySelected:[],
@@ -237,7 +236,7 @@ let gE = {
             $("#mainRow").empty();
             $("#title").text("YOU DIED...");
             newP.html(`
-            You only defeated ${this.alreadySelected.length-2} enemies.<br>
+            You only defeated ${this.alreadySelected.length-2} out of ${characters.length-1} enemies.<br>
             You died at level ${characters[this.index(this.selectedHero)].lvl}.<br>
             You died by the hands of the ${this.selectedEnemy}!<br>
             <br>
@@ -246,6 +245,13 @@ let gE = {
         }
 
         $("#mainRow").append(newP);
+
+        var endBttn = $("<button>");
+        endBttn.attr("type","button");
+        endBttn.attr("class","btn btn-secondary");
+        endBttn.attr("id","restartBttn");
+        endBttn.text("Restart game..")
+        $("#mainRow").append(endBttn);
     },
 
     newEnemy:function(){
@@ -268,6 +274,27 @@ let gE = {
                     characters[i].updateHTML();
                 }
             }
+        }
+    },
+
+    resetGame:function(){
+        //Reset Screen
+        $("#title").text("Choose a Hero to begin!");
+        $("#mainRow").empty();
+
+        //Reinitialize hero stats and game engine variables
+        characters[this.index(this.selectedHero)].maxHP-=characters[this.index(this.selectedHero)].lvl-1;
+        characters[this.index(this.selectedHero)].critChance-=(characters[this.index(this.selectedHero)].lvl-1) * 10;
+        this.selectedHero="";
+        this.selectedEnemy="";
+        this.alreadySelected=[];
+        this.state=0;
+
+        //Fill all characters' HP and reprint their cards
+        for(let character of characters){
+            character.HP = character.maxHP*5;
+            character.generateStartCard("col-lg-4");
+            character.updateHTML();
         }
     }
 }
@@ -373,6 +400,10 @@ $(document).ready(function() {
             gE.state = 1;
         }
     });
+
+    $(document).on("click","#restartBttn",function(){
+        gE.resetGame();
+    })
 
 
 });
