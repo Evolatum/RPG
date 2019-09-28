@@ -118,11 +118,12 @@ class characterClass{
 
 //Array of objects that are constructed from characterClass
 let characters = [
-    new characterClass("Archer", 6, 8, 30, "far fa-bow-arrow", 16, 4, "far fa-bullseye-arrow", "assets/images/Archer.png"),
-    new characterClass("Warrior", 10, 8, 10, "far fa-sword", 10, 2, "far fa-shield-alt", "assets/images/Warrior.png"),
-    new characterClass("Rogue", 8, 6, 50, "far fa-dagger", 20, 6, "far fa-flask-poison", "assets/images/Rogue.png"),
-    new characterClass("Mage", 6, 8, 30, "far fa-wand-magic", 16, 4, "far fa-book-spells", "assets/images/Mage.png"),
-    new characterClass("Druid", 8, 8, 20, "far fa-staff", 20, 5, "far fa-paw-claws", "assets/images/Druid.png")
+    new characterClass("Archer", 6, 7, 30, "far fa-bow-arrow", 20, 5, "far fa-bullseye-arrow", "assets/images/Archer.png"),
+    new characterClass("Warrior", 10, 8, 10, "far fa-sword", 8, 1, "far fa-shield-alt", "assets/images/Warrior.png"),
+    new characterClass("Rogue", 7, 6, 50, "far fa-dagger", 20, 6, "far fa-flask-poison", "assets/images/Rogue.png"),
+    new characterClass("Mage", 5, 8, 30, "far fa-wand-magic", 16, 4, "far fa-book-spells", "assets/images/Mage.png"),
+    new characterClass("Druid", 8, 8, 20, "far fa-staff", 20, 5, "far fa-paw-claws", "assets/images/Druid.png"),
+    new characterClass("Witch", 4, 9, 50, "far fa-scythe", 12, 2, "far fa-flame", "assets/images/Witch.png")
 ];
 
 //Object with properties and methods singular to game, gE = gameEngine
