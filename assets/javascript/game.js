@@ -285,6 +285,7 @@ let gE = {
         //Reinitialize hero stats and game engine variables
         characters[this.index(this.selectedHero)].maxHP-=characters[this.index(this.selectedHero)].lvl-1;
         characters[this.index(this.selectedHero)].critChance-=(characters[this.index(this.selectedHero)].lvl-1) * 10;
+        characters[this.index(this.selectedHero)].lvl=1;
         this.selectedHero="";
         this.selectedEnemy="";
         this.alreadySelected=[];
