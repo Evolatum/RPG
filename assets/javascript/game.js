@@ -29,9 +29,9 @@ class characterClass{
         }
     }
 
-    generateStartCard(){
+    generateStartCard(size){
         var newCol = $("<div>");
-        newCol.attr("class", "col-lg-4 col-md-6");
+        newCol.attr("class", size);
         var newCard = $("<div>");
         newCard.attr("class", "character jumbotron");
         newCard.attr("id", this.name);
@@ -134,9 +134,9 @@ let gE = {
     alreadySelected:[],
     state:0,
 
-    emptyCol:function(){
+    emptyCol:function(size){
         var newCol = $("<div>");
-        newCol.attr("class", "col-lg-4 col-md-0");
+        newCol.attr("class", size);
         $("#mainRow").append(newCol);
     },
     
@@ -229,7 +229,7 @@ let gE = {
             You defeated all ${characters.length-1} enemies!<br>
             You reached level ${characters[this.index(this.selectedHero)].lvl}!<br>
             <br>
-            Congratulations!!!
+            Congratz!!
             `);
         } 
         else{ 
@@ -263,7 +263,7 @@ let gE = {
                     }
                 }
                 if(!already){
-                    characters[i].generateStartCard();
+                    characters[i].generateStartCard("col-lg-4");
                     characters[i].updateHTML();
                 }
             }
@@ -279,7 +279,7 @@ $(document).ready(function() {
 
     //Character cards initialization
     for(let character of characters){
-        character.generateStartCard();
+        character.generateStartCard("col-lg-4");
         character.updateHTML();
     }
 
@@ -314,11 +314,11 @@ $(document).ready(function() {
             gE.state=2;
             $("#mainRow").empty();
             $("#title").text("Fight!");
-            characters[gE.index(gE.selectedHero)].generateStartCard();
+            gE.emptyCol("col-lg-2");
+            characters[gE.index(gE.selectedHero)].generateStartCard("col-lg-4");
             characters[gE.index(gE.selectedHero)].updateHTML();
             characters[gE.index(gE.selectedHero)].addAttacks();
-            gE.emptyCol();
-            characters[gE.index(gE.selectedEnemy)].generateStartCard();
+            characters[gE.index(gE.selectedEnemy)].generateStartCard("col-lg-4");
             characters[gE.index(gE.selectedEnemy)].updateHTML();
             $(`#${gE.selectedEnemy}`).children("h5").text(`Enemy: ${gE.selectedEnemy}`);
             gE.alreadySelected.push(gE.selectedEnemy);
