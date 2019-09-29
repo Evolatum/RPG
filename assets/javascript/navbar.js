@@ -1,4 +1,4 @@
-$("body").append(`
+$("body").prepend(`
 <nav class="navbar navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="https://evolatum.github.io/Portfolio/portfolio.html">
         <i class="fad fa-chevron-left d-inline-block align-middle" id="backButton" alt="Go back"></i>
