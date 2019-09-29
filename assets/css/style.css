@@ -6,15 +6,6 @@ body{
     color: #2f3644;
 }
 
-.navbar{
-    font-family: 'Montserrat', sans-serif;
-}
-
-#backButton{
-    font-size: 1.5em;
-    color: rgb(159, 143, 245);
-}
-
 #mainContent{
     margin-top: 6em;
 }
@@ -43,18 +34,4 @@ body{
 
 .btn{
     margin:.2em;
-}
-
-#nameShort{
-    display: none;
-}
-
-@media (max-width: 767px){
-    #nameLong{
-        display: none;
-    }
-
-    #nameShort{
-        display: inline;
-    }
 }
